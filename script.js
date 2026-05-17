@@ -140,11 +140,10 @@ if (inviteWrapper && openingScreen) {
 
 
 /* =========================
-   COUNTDOWN (Fixed Start)
+   COUNTDOWN (Real Date)
 ========================= */
 
-// عدد الثواني = 297 يوم
-let totalSeconds = 297 * 24 * 60 * 60;
+const weddingDate = new Date("2027-03-11T00:00:00").getTime();
 
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
@@ -155,9 +154,12 @@ let timer;
 
 function updateCountdown() {
 
-    if (!daysEl) return;
+    if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
-    if (totalSeconds <= 0) {
+    const now = new Date().getTime();
+    const distance = weddingDate - now;
+
+    if (distance <= 0) {
 
         clearInterval(timer);
 
@@ -167,22 +169,19 @@ function updateCountdown() {
         return;
     }
 
-    const d = Math.floor(totalSeconds / (24 * 60 * 60));
-    const h = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
-    const m = Math.floor((totalSeconds % (60 * 60)) / 60);
-    const s = Math.floor(totalSeconds % 60);
+    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const h = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((distance / (1000 * 60)) % 60);
+    const s = Math.floor((distance / 1000) % 60);
 
     daysEl.innerHTML = String(d).padStart(2, "0");
     hoursEl.innerHTML = String(h).padStart(2, "0");
     minutesEl.innerHTML = String(m).padStart(2, "0");
     secondsEl.innerHTML = String(s).padStart(2, "0");
-
-    totalSeconds--; // 👈 يقل كل ثانية
 }
 
 updateCountdown();
 timer = setInterval(updateCountdown, 1000);
-
 /* =========================
    FAQ
 ========================= */
